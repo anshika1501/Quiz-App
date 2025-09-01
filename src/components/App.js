@@ -5,7 +5,8 @@ import StartScreen from "./StartScreen";
 import Loader from "./Loader";
 import Error from "./Error";
 import Question from "./Question";
-import NextButton from "../NextButton";
+import NextButton from "./NextButton";
+import Progress from "./Progress";
 
 const initialState={
   questions:[],
@@ -14,6 +15,7 @@ const initialState={
   index:0,
   answer:null,
   points:0,
+
 };
 
 
@@ -55,11 +57,12 @@ function reducer(state, action) {
 
 export default function App(){
 
-  const [{questions,status,index,answer},dispatch]=
+   const [{ questions, status, index, answer, points, },dispatch]=
   useReducer(reducer,initialState);
 
-  const numQuestions= questions.length;
-  
+  const numQuestions = questions.length;
+  const maxPossiblePoints = questions.reduce((prev, cur) => prev + cur.points, 0);
+
   useEffect(function(){
     fetch ('http://localhost:9000/questions')
     .then((res)=>res.json())
@@ -70,16 +73,30 @@ export default function App(){
     <div className="app">
       <Header/>
       <Main>
-       {status==='loading' && <loader/> }
-        {status === 'loading' && <Error />}
-        {status === 'ready' && <StartScreen numQuestions={numQuestions}
-        dispatch={dispatch}/>}
+       {status==='loading' && <Loader/> }
+        {status === 'error' && <Error />}
+        {status === 'ready' && (
+        <StartScreen numQuestions={numQuestions}
+        dispatch={dispatch}/>
+        )}
         {status === "active" && (
-          <> <Question question={questions[index]} 
-         dispatch={dispatch} answer={answer}
+        <> 
+
+        <Progress
+        index={index} 
+        numQuestions={numQuestions} 
+        points={points}  
+        maxPossiblePoints={maxPossiblePoints}
+        answer={answer} 
+        />
+          <Question 
+          question={questions[index]} 
+          dispatch={dispatch} 
+          answer={answer}
          />
-         <NextButton dispatch={dispatch} answer={answer}/>
-          </>
+         <NextButton dispatch={dispatch} 
+         answer={answer}/>
+        </>
          )}
         </Main>
     </div>

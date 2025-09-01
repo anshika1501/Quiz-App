@@ -23,7 +23,7 @@ html {
 }
 
 body {
-  min-height: 100vh;
+ /* min-height: 100vh;*/
   color: var(--color-light);
   background-color: var(--color-darkest);
   padding: 3.2rem;
@@ -34,6 +34,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
 }
 
 .main {
