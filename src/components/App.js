@@ -11,6 +11,8 @@ import FinishScreen from "./FinishedScreen";
 import Footer from "./Footer";
 import Timer from "./Timer";
 
+const SECS_PER_QUESTION=30;
+
 const initialState={
   questions:[],
   //'loading,'error','ready','active'
@@ -19,7 +21,7 @@ const initialState={
   answer:null,
   points:0,
   highscore:0,
-  secondsRemaining:60
+  secondsRemaining:null,
 };
 
 
@@ -39,13 +41,14 @@ function reducer(state, action) {
       case 'start':
         return {...state,
           status:'active',
+          secondsRemaining:state.questions.length * SECS_PER_QUESTION,
         };
       case "newAnswer":
         const question=state.questions.at(state.index);
         return {
           ...state,
           answer:action.payload,
-          points:action.payload===question.correctOptions? 
+          points:action.payload===question.correctOption? 
           state.points+question.points : state.points
         };
       case 'nextQuestion':
